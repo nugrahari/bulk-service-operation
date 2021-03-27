@@ -22,7 +22,7 @@ def create_service():
 		f.write(s)
 		f.close()
 
-		break 
+		# break 
 
 	cmd = 'sudo systemctl daemon-reload'
 	os.system(cmd)
@@ -33,14 +33,14 @@ def start_service():
 		cmd = 'sudo systemctl start ' + initial + '_' + data[0] + '.service'
 		print(cmd)
 		os.system(cmd)
-		break
+		# break
 
 def stop_service():
 	for data in data_cctv:
 		cmd = 'sudo systemctl stop ' + initial + '_' + data[0] + '.service'
 		print(cmd)
 		os.system(cmd)
-		break
+		# break
 
 
 def restart_service():
@@ -48,7 +48,7 @@ def restart_service():
 		cmd = 'sudo systemctl restart ' + initial + '_' + data[0] + '.service'
 		print(cmd)
 		os.system(cmd)
-		break
+		# break
 
 def delete_service():
 
@@ -58,12 +58,26 @@ def delete_service():
 		cmd= 'rm /etc/systemd/system/' + initial + '_' + data[0] + '.service'
 		print(cmd)
 		os.system(cmd)
-		break 
+		# break 
 
 	cmd = 'sudo systemctl daemon-reload'
 	print(cmd)
 	os.system(cmd)
 
+def status_service():
+
+	for data in data_cctv:
+		
+		cmd= 'systemctl is-active --quiet ' + initial + '_' + data[0] + '.service'
+
+		print(cmd)
+		cmd = os.system(cmd)
+
+		if cmd == 0:
+			print("service is running")
+		else:
+			print('service is not running')
+		# break 
 
 load_dotenv('template/.env')
 
@@ -77,6 +91,14 @@ domain = os.getenv('DOMAIN')
 apiKey = os.getenv('APIKEY')
 # print(csv_cctv.head())
 
+if len(sys.argv) != 2 :
+	print("Error !!!")
+	print("\tRun : python setup.py create-All > for create all service")
+	print("\tRun : python setup.py start-All > for start all service")
+	print("\tRun : python setup.py stop-All > for stop all service")
+	print("\tRun : python setup.py restart-All > for restart all service")
+	print("\tRun : python setup.py status-All > for check status all service")
+	sys.exit()
 
 if sys.argv[1] == "create-All":
 	create_service()
@@ -92,3 +114,14 @@ elif sys.argv[1] == "restart-All":
 
 elif sys.argv[1] == "delete-All":
 	delete_service() 
+
+elif sys.argv[1] == "status-All":
+	status_service() 
+
+else:
+	print("Error !!!")
+	print("\tRun : python setup.py create-All > for create all service")
+	print("\tRun : python setup.py start-All > for start all service")
+	print("\tRun : python setup.py stop-All > for stop all service")
+	print("\tRun : python setup.py restart-All > for restart all service")
+	print("\tRun : python setup.py status-All > for check status all service")

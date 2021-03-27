@@ -1,0 +1,14 @@
+[Unit]
+Description=codeDescription
+
+[Service]
+#User=root
+Type=simple
+Restart=always
+RestartSec=15s
+#WorkingDirectory=/root/.kecilin/engine/40k
+ExecStart=codeEngine 'codeInput' 'codeOutput' codeDomain codeApiKey
+#StandardInput=tty-force
+
+#[Install]
+#WantedBy=multi-user.target

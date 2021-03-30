@@ -12,13 +12,13 @@ def create_service():
 	for data in data_cctv:
 		# print(data[0], data[1], data[2])
 		s = open("template/service.txt").read()
-		s = s.replace('codeDescription', data[0])
+		s = s.replace('codeDescription', data[1])
 		s = s.replace('codeEngine', engine)
-		s = s.replace('codeInput', data[1])
-		s = s.replace('codeOutput', data[2])
+		s = s.replace('codeInput', data[2])
+		s = s.replace('codeOutput', data[3])
 		s = s.replace('codeDomain', domain)
 		s = s.replace('codeApiKey', apiKey)
-		f = open('/etc/systemd/system/' + initial + '_' + data[0] + '.service', 'w')
+		f = open('/etc/systemd/system/' + initial + '_' + data[1] + '-' + str(data[0]) + '.service', 'w')
 		f.write(s)
 		f.close()
 
@@ -30,14 +30,14 @@ def create_service():
 
 def start_service():
 	for data in data_cctv:
-		cmd = 'sudo systemctl start ' + initial + '_' + data[0] + '.service'
+		cmd = 'sudo systemctl start ' + initial + '_' + data[1] + '-' + str(data[0]) + '.service'
 		print(cmd)
 		os.system(cmd)
 		# break
 
 def stop_service():
 	for data in data_cctv:
-		cmd = 'sudo systemctl stop ' + initial + '_' + data[0] + '.service'
+		cmd = 'sudo systemctl stop ' + initial + '_' + data[1] + '-' + str(data[0]) + '.service'
 		print(cmd)
 		os.system(cmd)
 		# break
@@ -45,7 +45,7 @@ def stop_service():
 
 def restart_service():
 	for data in data_cctv:
-		cmd = 'sudo systemctl restart ' + initial + '_' + data[0] + '.service'
+		cmd = 'sudo systemctl restart ' + initial + '_' + data[1] + '-' + str(data[0]) + '.service'
 		print(cmd)
 		os.system(cmd)
 		# break
@@ -55,7 +55,7 @@ def delete_service():
 
 	for data in data_cctv:
 		
-		cmd= 'rm /etc/systemd/system/' + initial + '_' + data[0] + '.service'
+		cmd= 'rm /etc/systemd/system/' + initial + '_' + data[1] + '-' + str(data[0]) + '.service'
 		print(cmd)
 		os.system(cmd)
 		# break 
@@ -68,9 +68,9 @@ def status_service():
 
 	for data in data_cctv:
 		
-		cmd= 'systemctl is-active --quiet ' + initial + '_' + data[0] + '.service'
+		cmd= 'systemctl is-active --quiet ' + initial + '_' + data[1] + '-' + str(data[0]) + '.service'
 
-		print(cmd)
+		print("\n"+cmd)
 		cmd = os.system(cmd)
 
 		if cmd == 0:
@@ -78,6 +78,18 @@ def status_service():
 		else:
 			print('service is not running')
 		# break 
+
+def enable_service():
+	for data in data_cctv:
+		cmd = 'sudo systemctl enable ' + initial + '_' + data[1] + '-' + str(data[0]) + '.service'
+		print(cmd)
+		os.system(cmd)
+
+def disable_service():
+	for data in data_cctv:
+		cmd = 'sudo systemctl disable ' + initial + '_' + data[1] + '-' + str(data[0]) + '.service'
+		print(cmd)
+		os.system(cmd)
 
 load_dotenv('template/.env')
 
@@ -116,7 +128,13 @@ elif sys.argv[1] == "delete-All":
 	delete_service() 
 
 elif sys.argv[1] == "status-All":
-	status_service() 
+	status_service()
+
+elif sys.argv[1] == "enable-All":
+	enable_service()
+
+elif sys.argv[1] == "disable-All":
+	disable_service()  
 
 else:
 	print("Error !!!")

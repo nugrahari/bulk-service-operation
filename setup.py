@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import pandas as pd
 import numpy as np
 from dotenv import load_dotenv
@@ -91,6 +92,41 @@ def disable_service():
 		print(cmd)
 		os.system(cmd)
 
+def pm2_create():
+	results = []
+	for data in data_cctv:
+		
+		# break 
+		data = {
+		    "name"       : f"{initial}-{data[1]}",
+		    "script"     : f"{engine} '{data[2]}' '{data[3]}' {domain} {apiKey}",
+		}
+		results.append(data)
+		print(data)
+
+	with open('template/pm2-config.json', 'w') as fp:
+		json.dump(results, fp) 
+
+def pm2_start():
+	cmd = "pm2 start template/pm2-config.json"
+	os.system(cmd)
+
+def pm2_status():
+	cmd = "pm2 status template/pm2-config.json"
+	os.system(cmd)
+
+def pm2_stop():
+	cmd = "pm2 stop template/pm2-config.json"
+	os.system(cmd)
+
+def pm2_delete():
+	cmd = "pm2 delete template/pm2-config.json"
+	os.system(cmd)
+	cmd = "sudo rm template/pm2-config.json"
+	os.system(cmd)
+
+
+
 load_dotenv('template/.env')
 
 csv_cctv = pd.read_csv(os.getenv('CCTV_LIST_CSV'), delimiter=',', header=0)
@@ -136,6 +172,17 @@ elif sys.argv[1] == "enable-All":
 elif sys.argv[1] == "disable-All":
 	disable_service()  
 
+elif sys.argv[1] == "pm2-create":
+	pm2_create()  
+elif sys.argv[1] == "pm2-start":
+	pm2_start()  
+elif sys.argv[1] == "pm2-status":
+	pm2_status()
+elif sys.argv[1] == "pm2-stop":
+	pm2_stop()
+elif sys.argv[1] == "pm2-delete":
+	pm2_delete()  
+
 else:
 	print("Error !!!")
 	print("\tRun : python setup.py create-All > for create all service")
@@ -143,3 +190,11 @@ else:
 	print("\tRun : python setup.py stop-All > for stop all service")
 	print("\tRun : python setup.py restart-All > for restart all service")
 	print("\tRun : python setup.py status-All > for check status all service")
+	print("\tRun : python setup.py delete-All > for delete all service")
+	print("\tRun : python setup.py enable-All > for enable startup all service")
+	print("\tRun : python setup.py disable-All > for disable startup all service\n")
+	print("\tRun : python setup.py pm2-create > for create all service by pm2")
+	print("\tRun : python setup.py pm2-start > for start all service by pm2")
+	print("\tRun : python setup.py pm2-status > for check status all service by pm2")
+	print("\tRun : python setup.py pm2-stop > for stop all service by pm2")
+	print("\tRun : python setup.py pm2-delete > for delete all service by pm2")

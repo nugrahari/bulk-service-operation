@@ -107,17 +107,39 @@ def pm2_create():
 	with open('template/pm2-config.json', 'w') as fp:
 		json.dump(results, fp) 
 
-def pm2_start():
-	cmd = "pm2 start template/pm2-config.json"
+def pm2_start(index):
+	if index != 'all':
+		index = int(index)-1
+		data = {
+	    "name"       : f"{initial}-{data_cctv[index][1]}",
+	    "script"     : f"{engine} '{data_cctv[index][2]}' '{data_cctv[index][3]}' {domain} {apiKey}",
+		}
+		print(data)
+
+		cmd = f"\npm2 start {initial}-{data_cctv[index][1]}"
+	else:
+		cmd = "pm2 start template/pm2-config.json"
 	os.system(cmd)
+	print(cmd)	
 
 def pm2_status():
 	cmd = "pm2 status template/pm2-config.json"
 	os.system(cmd)
 
-def pm2_stop():
-	cmd = "pm2 stop template/pm2-config.json"
+def pm2_stop(index):
+	if index != 'all':
+		index = int(index)-1
+		data = {
+	    "name"       : f"{initial}-{data_cctv[index][1]}",
+	    "script"     : f"{engine} '{data_cctv[index][2]}' '{data_cctv[index][3]}' {domain} {apiKey}",
+		}
+		print(data)
+
+		cmd = f"\npm2 stop {initial}-{data_cctv[index][1]}"
+	else:
+		cmd = "pm2 stop template/pm2-config.json"
 	os.system(cmd)
+	print(cmd)	
 
 def pm2_delete():
 	cmd = "pm2 delete template/pm2-config.json"
@@ -137,6 +159,20 @@ def pm2_logs(index):
 	print(cmd)
 	os.system(cmd)
 
+def pm2_restart(index):
+	if index != 'all':
+		index = int(index)-1
+		data = {
+	    "name"       : f"{initial}-{data_cctv[index][1]}",
+	    "script"     : f"{engine} '{data_cctv[index][2]}' '{data_cctv[index][3]}' {domain} {apiKey}",
+		}
+		print(data)
+
+		cmd = f"\npm2 restart {initial}-{data_cctv[index][1]}"
+	else:
+		cmd = "pm2 restart template/pm2-config.json"
+	os.system(cmd)
+	print(cmd)	
 
 
 load_dotenv('template/.env')
@@ -151,7 +187,7 @@ domain = os.getenv('DOMAIN')
 apiKey = os.getenv('APIKEY')
 # print(csv_cctv.head())
 
-if len(sys.argv) != 3 :
+if len(sys.argv) < 2 or len(sys.argv) > 3  :
 	print("Error !!!")
 	print("\tRun : python setup.py create-All > for create all service")
 	print("\tRun : python setup.py start-All > for start all service")
@@ -161,11 +197,14 @@ if len(sys.argv) != 3 :
 	print("\tRun : python setup.py delete-All > for delete all service")
 	print("\tRun : python setup.py enable-All > for enable startup all service")
 	print("\tRun : python setup.py disable-All > for disable startup all service\n")
+	
 	print("\tRun : python setup.py pm2-create > for create all service by pm2")
 	print("\tRun : python setup.py pm2-start > for start all service by pm2")
 	print("\tRun : python setup.py pm2-status > for check status all service by pm2")
 	print("\tRun : python setup.py pm2-stop > for stop all service by pm2")
 	print("\tRun : python setup.py pm2-delete > for delete all service by pm2")
+	print("\tRun : python setup.py pm2-logs no-index > for delete all service by pm2")
+	print("\tRun : python setup.py pm2-restart > for start all service by pm2")
 	sys.exit()
 
 if sys.argv[1] == "create-All":
@@ -195,15 +234,17 @@ elif sys.argv[1] == "disable-All":
 elif sys.argv[1] == "pm2-create":
 	pm2_create()  
 elif sys.argv[1] == "pm2-start":
-	pm2_start()  
+	pm2_start(sys.argv[2])  
 elif sys.argv[1] == "pm2-status":
 	pm2_status()
 elif sys.argv[1] == "pm2-stop":
-	pm2_stop()
+	pm2_stop(sys.argv[2])
 elif sys.argv[1] == "pm2-delete":
 	pm2_delete()
 elif sys.argv[1] == "pm2-logs":
 	pm2_logs(sys.argv[2])  
+elif sys.argv[1] == "pm2-restart":
+	pm2_restart(sys.argv[2])  
 
 else:
 	print("Error !!!")
@@ -215,8 +256,11 @@ else:
 	print("\tRun : python setup.py delete-All > for delete all service")
 	print("\tRun : python setup.py enable-All > for enable startup all service")
 	print("\tRun : python setup.py disable-All > for disable startup all service\n")
+
 	print("\tRun : python setup.py pm2-create > for create all service by pm2")
 	print("\tRun : python setup.py pm2-start > for start all service by pm2")
 	print("\tRun : python setup.py pm2-status > for check status all service by pm2")
 	print("\tRun : python setup.py pm2-stop > for stop all service by pm2")
 	print("\tRun : python setup.py pm2-delete > for delete all service by pm2")
+	print("\tRun : python setup.py pm2-logs no-index > for delete all service by pm2")
+	print("\tRun : python setup.py pm2-restart > for start all service by pm2")

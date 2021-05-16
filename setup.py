@@ -108,6 +108,7 @@ def pm2_create():
 		json.dump(results, fp) 
 
 def pm2_start(index):
+	data = ""
 	if index != 'all':
 		index = int(index)-1
 		data = {
@@ -127,6 +128,7 @@ def pm2_status():
 	os.system(cmd)
 
 def pm2_stop(index):
+	data = ""
 	if index != 'all':
 		index = int(index)-1
 		data = {
@@ -160,6 +162,7 @@ def pm2_logs(index):
 	os.system(cmd)
 
 def pm2_restart(index):
+	data = ""
 	if index != 'all':
 		index = int(index)-1
 		data = {
